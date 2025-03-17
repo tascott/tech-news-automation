@@ -1,8 +1,8 @@
 {
 	"crons": [
 		{
-			"path": "/api/search-tech-news",
-			"schedule": "0 5 */2 * *"
+			"path": "/api/cron",
+			"schedule": "0 0 */2 * *"
 		}
 	]
 }
