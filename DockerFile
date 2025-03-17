@@ -1,17 +1,15 @@
-# Start from an official Node.js v20 lightweight image
 FROM node:20-alpine
 
-# Set the working directory inside the container to /app
 WORKDIR /app
-
-# Copy package.json into the container
 COPY package.json .
-
-# Install Node.js dependencies
 RUN npm install
-
-# Copy all other project files into the container
 COPY . .
 
-# Run the main script when the container starts
-CMD ["node", "index.js"]
+# Install cron
+RUN apk add --no-cache cron
+
+# Copy cron config
+COPY crontab /etc/crontabs/root
+
+# Start cron daemon
+CMD ["crond", "-f"]

@@ -1,21 +1,27 @@
 import {searchPositiveTechNews} from './lib/deepseek.js';
 import {supabase} from './lib/supabase.js';
 
-async function runJob() {
-    console.log('Fetching tech news...');
+async function runPositiveTechNews() {
+    console.log('[INFO] Running tech news script...');
+
     try {
+        console.log('Calling LLM API...');
         const newsSummary = await searchPositiveTechNews();
+        console.log('API response received:',newsSummary);
+
         // const {error} = await supabase
-        //     .from('curated_content')
+        //     .from('positive_tech_news')
         //     .insert({summary: newsSummary});
 
-        // if(error) throw error;
+        // if(error) {
+        //     console.error('Supabase error:',error);
+        //     throw error;
+        // }
 
-        console.log('News saved successfully!');
-        console.log(newsSummary);
-    } catch(err) {
-        console.error('Error:',err);
+        console.log('Inserted news to Supabase (not yet).');
+    } catch(error) {
+        console.error('Script error:',error);
     }
 }
 
-runJob();
+runPositiveTechNews();
