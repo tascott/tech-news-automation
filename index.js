@@ -1,24 +1,25 @@
-import {searchPositiveTechNews} from './lib/deepseek.js';
 import {supabase} from './lib/supabase.js';
 
 async function runPositiveTechNews() {
-    console.log('[INFO] Running tech news script...');
+    console.log('[INFO] Testing Supabase connection...');
 
     try {
-        console.log('Calling LLM API...');
-        const newsSummary = await searchPositiveTechNews();
-        console.log('API response received:',newsSummary);
+        const now = new Date();
+        const formattedDateTime = now.toLocaleString();
 
-        // const {error} = await supabase
-        //     .from('positive_tech_news')
-        //     .insert({summary: newsSummary});
+        const {error} = await supabase
+            .from('curated_content')
+            .insert({
+                title: 'test',
+                content: formattedDateTime
+            });
 
-        // if(error) {
-        //     console.error('Supabase error:',error);
-        //     throw error;
-        // }
+        if(error) {
+            console.error('Supabase error:',error);
+            throw error;
+        }
 
-        console.log('Inserted news to Supabase (not yet).');
+        console.log('Successfully inserted test record to Supabase!');
     } catch(error) {
         console.error('Script error:',error);
     }
