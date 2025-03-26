@@ -22,15 +22,26 @@ async function runPositiveTechNews() {
 
     try {
         console.log('Calling LLM APIs...');
-        const newsSummary = await searchNewsWithOpenAIDeepResearch();
-        console.log('News Summary received:',newsSummary);
+        const openAiNewsSummary = await searchNewsWithOpenAIDeepResearch();
+        console.log('OpenAI News Summary received:', openAiNewsSummary);
 
-        const newsSummaryJSON = convertLLMResponseToJSON(newsSummary);
-        console.log('Converted to JSON:',newsSummaryJSON);
+        const perplexityNewsSummary = await askPerplexity();
+        console.log('Perplexity News Summary received:', perplexityNewsSummary);
 
-        for(const newsItem of newsSummaryJSON) {
+        const openAiNewsSummaryJSON = convertLLMResponseToJSON(openAiNewsSummary);
+        console.log('OpenAI Converted to JSON:', openAiNewsSummaryJSON);
+
+        // Add content_type to each source's items
+        const openAiItems = openAiNewsSummaryJSON.map(item => ({ ...item, content_type: 'openai_deep_research' }));
+        const perplexityItems = perplexityNewsSummary.map(item => ({ ...item, content_type: 'perplexity_deep_research' }));
+
+        // Combine both sources
+        const allNewsItems = [...openAiItems, ...perplexityItems];
+        console.log('Combined news items:', allNewsItems);
+
+        for(const newsItem of allNewsItems) {
             try {
-                console.log('Processing item:',newsItem);
+                console.log('Processing item:', newsItem);
                 const {error} = await supabase
                     .from('curated_content')
                     .insert({
@@ -39,7 +50,7 @@ async function runPositiveTechNews() {
                         source_url: newsItem.source_url,
                         source_name: newsItem.source_name,
                         sentiment: null,
-                        content_type: 'news',
+                        content_type: newsItem.content_type,
                         published_at: newsItem.published_at,
                         added_at: now,
                         last_updated_at: now,
