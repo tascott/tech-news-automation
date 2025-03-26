@@ -1,5 +1,7 @@
 import {searchNewsWithOpenAIDeepResearch} from './lib/openAIdeepResearch.js';
 import {supabase} from './lib/supabase.js';
+import {askPerplexity} from './lib/perplexity.js';
+
 
 function convertLLMResponseToJSON(llmResponse) {
     console.log('Raw LLM Response:',llmResponse);
